@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>JS检查是什么浏览器</title>
+<script language="JavaScript" type="text/javascript">
+function checkFirefoxOrIE()
+{
+	userAgent = window.navigator.userAgent.toLowerCase();
+	document.write("userAgent: "+userAgent+"<br>");
+	if (userAgent.indexOf("firefox") >= 1)
+	{
+		Findex=userAgent.indexOf("firefox/");
+		versionName=userAgent.substr(Findex+"Firefox/".length,3);
+		document.write("您用的是火狐浏览器！版本是：Firefox/"+versionName+"<br>");
+	}
+	else
+	{
+		var name=navigator.appName;
+		if (name=="Microsoft Internet Explorer")
+		{
+			document.write("你用的是IE浏览器！");
+		}
+	}
+		
+		var explorer = window.navigator.userAgent.toLowerCase();
+	//ie 
+	if (explorer.indexOf("msie") >= 0)
+	{
+		document.write("你用的是IE浏览器！");
+	}
+	//firefox 
+	else if (explorer.indexOf("firefox") >= 0)
+	{
+		document.write("你用的是Firefox浏览器！");
+	}
+	//Chrome
+	else if(explorer.indexOf("chrome") >= 0)
+	{
+		document.write("你用的是chrome浏览器！");
+	}
+	//Opera
+	else if(explorer.indexOf("opera") >= 0)
+	{
+		document.write("你用的是Opera浏览器！");
+	}
+	//Safari
+	else if(explorer.indexOf("safari") >= 0)
+	{
+		document.write("你用的是Safari浏览器！");
+	}
+}
+</script>
+</head>
+<body onload="checkFirefoxOrIE();">
+</body>
+</html>

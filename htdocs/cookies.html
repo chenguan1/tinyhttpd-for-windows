@@ -1,0 +1,219 @@
+<!DOCTYPE html>  
+<html>  
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>读写cookie</title>
+</head>  
+<body>
+<script type="text/javascript">  
+    function inputclick()
+	{
+        // ie8下方案
+
+		var userNameValue = getCookieValue("userName");
+        var pwdValue = getCookieValue("password");
+		//var strguid2 = getCookieValue("guid2");
+		//var strguid3 = getCookieValue("guid3");
+        chromeLog("username: " + userNameValue);
+        chromeLog("pwd: " + pwdValue);
+		//chromeLog("guid: " + strguid);
+		//chromeLog("guid2: " + strguid2);
+		
+		var strguid = getCookieValue("guid");
+		var strgjver = getCookieValue("gjver");
+		var strpush = getCookieValue("push");
+		var strhasgj = getCookieValue("hasgj");
+		var strhasqd = getCookieValue("hasqd");
+		var strtimestamp = getCookieValue("timestamp");
+		
+		print("guid: " + strguid);
+		print("gjver: " + strgjver);
+        print("push: " + strpush);
+		print("hasgj: " + strhasgj);
+        print("hasqd: " + strhasqd);
+		print("timestamp: " + strtimestamp);
+		//print("guid2: " + strguid2);
+		//print("guid3: " + strguid3);
+        //setCookie("userName","admin",24,"/");
+        //setCookie("password","xyz",24,"/");
+		//setCookie("guid","f038813d0fae272ba80d6edf6fe939ef",24,"/");
+        
+        // chrome下方案
+        //localStorage.username = 'abc';
+        //chromeLog("---localStorage username:" + localStorage.username);
+        //updatePageCountNoSession();
+        //updatePageCountWithSession();
+		
+		//post('xx.html', {gjguid:'f038813d0fae272ba80d6edf6fe939ef', business:'1', cmd:'101', hasgj:'0', hasqd:'1'});  
+    }
+	
+    function setCookie(name, value, hours, path)
+	{
+        var name = escape(name);
+        var value = escape(value);
+        var expires = new Date();
+        expires.setTime(expires.getTime() + hours * 60*60*1000);
+        path = path =="" ? "":";path=" + path;
+        _expires = (typeof hours) == "string" ? "": ";expires=" + expires.toUTCString();
+        document.cookie = name + "=" + value + _expires + path;
+        chromeLog("cookie: " + document.cookie);
+		print("cookie: " + document.cookie);
+    }
+	
+    function getCookieValue(name)
+	{
+        var name = escape(name);
+        var allcookies = document.cookie;
+        name += "=";
+        var pos = allcookies.indexOf(name);
+        if (pos != -1)
+		{
+            var start = pos + name.length;
+            var end = allcookies.indexOf(";",start);
+            if (end == -1)
+			{
+                end = allcookies.length;
+            }
+            var value = allcookies.substring(start, end);
+            return unescape(value);
+        }
+		else
+		{
+            return "";
+        }
+    }
+	
+    function deleteCookie(name,path)
+	{
+        var name = escape(name);
+        var expires = new Date(0);
+        path = path == "" ? "" : ";path=" + path;
+        document.cookie = name + "=" + ";expires=" + expires.toUTCString() + path;
+    }
+	
+    // 关闭浏览器后数据不会消失
+    function updatePageCountNoSession()
+	{
+        // localStorage.pagecount与localStorage.getItem("pagecount")在此处均可用
+        // 不同的是：若pagecount不存在，前者返回undefined，后者返回null。
+        if(localStorage.pagecount)
+		{
+            localStorage.pagecount = Number(localStorage.pagecount) + 1;
+        }
+		else
+		{
+            localStorage.pagecount = 1;
+            // 取值或设置值的两种方式
+            // localStorage.setItem("pagecount",1);
+        }
+        chromeLog("---localStorage pagecount:" + localStorage.getItem("pagecount"));  
+    }
+	
+    // 关闭网页后数据会消失
+    function updatePageCountWithSession()
+	{
+        if(sessionStorage.pagecount)
+		{
+            sessionStorage.pagecount = Number(sessionStorage.pagecount) + 1;
+        }
+		else
+		{
+            sessionStorage.pagecount = 1;
+        }
+        chromeLog("---sessionStorage pagecount:" + sessionStorage.pagecount);
+    }
+	
+	function print(msg)
+	{
+		var el = document.createElement('div');
+		el.innerHTML = '<b>'+msg+'</b>';
+		var elContainer = document.getElementById('log');
+		elContainer.appendChild(el)
+	}
+	
+	function isChrome()
+	{
+		if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
+		{
+			return true;         
+		}
+		return false;
+	}
+	
+	function chromeLog(msg)
+	{
+		if (isChrome())
+		{
+			console.log(msg);
+		}
+	}
+	
+	function post(URL, PARAMS)
+	{
+		var temp = document.createElement("form");
+		temp.action = URL;
+		temp.method = "post";
+		temp.style.display = "none";
+		for (var x in PARAMS)
+		{
+			var opt = document.createElement("textarea");
+			opt.name = x;
+			opt.value = PARAMS[x];
+			// alert(opt.name)
+			temp.appendChild(opt);
+		}
+		document.body.appendChild(temp);
+		temp.submit();
+		return temp;
+	}
+	
+	/**
+	 * 返回一个布尔值表明当前浏览器是否支持NPAPI
+	 */
+	function isSupportNPAPI()
+	{
+		var fileNameReg = new RegExp('np.*\.dll', 'g');
+		for (var i = 0; i < navigator.plugins.length; ++i)
+		{
+			if (fileNameReg.test(navigator.plugins[i].filename))
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+
+	/**
+	 * 返返回一个布尔值表明当前浏览器是否支持PPAPI
+	 */
+	function isSupportPPAPI()
+	{
+		var fileNameReg = new RegExp('pepflashplayer.*\.dll', 'g');
+		for (var i = 0; i < navigator.plugins.length; ++i)
+		{
+			if (fileNameReg.test(navigator.plugins[i].filename))
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	function checkNPAPI()
+	{
+		var npapi = isSupportNPAPI();
+		var ppapi = isSupportPPAPI();
+		
+		print("npapi: " + npapi);
+		print("ppapi: " + ppapi);
+	}
+	
+</script>
+
+    <input type="button" id="input1" value="Click Me" onclick=inputclick()></input>
+	<input type="button" id="input1" value="Check NPAPI" onclick=checkNPAPI()></input>
+	<div id="log"></div>
+	
+</body>
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+</html>
